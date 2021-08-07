@@ -12,38 +12,44 @@ namespace API.Controllers
     [Route("api/Controller")]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _repo;
+        private readonly IGenericRepository<Product> _productsRepo;
+        private readonly IGenericRepository<ProductType> _productTypeRepo;
+        private readonly IGenericRepository<ProductBrand> _productBrandRepo;
 
-        public ProductsController(IProductRepository repo)
+        public ProductsController(IGenericRepository<Product> productsRepo,
+            IGenericRepository<ProductType> productTypeRepo,
+            IGenericRepository<ProductBrand> productBrandRepo)
         {
-             _repo = repo;   
+            _productsRepo = productsRepo;
+            _productTypeRepo = productTypeRepo;
+            _productBrandRepo = productBrandRepo;
         }
 
         [HttpGet("Products")]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
-            var products = await _repo.GetProductsAsync();  
+            var products = await _productsRepo.ListAllAsync();  
             return Ok(products);
         }
 
         [HttpGet("Product/{id}")]
         public async Task<ActionResult<Product>> GetProductAsync(int id)
         {
-            var products = await _repo.GetProductsByIdAsync(id); 
+            var products = await _productsRepo.GetByIdAsync(id); 
             return Ok(products);
         }
 
         [HttpGet("ProductBrands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrandsAsync()
         {
-            var brands = await _repo.GetProductBrandsAsync();
+            var brands = await _productBrandRepo.ListAllAsync();
             return Ok(brands);
         }
 
         [HttpGet("ProductTypes")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetTypesAsync()
         {
-            var types = await _repo.GetProductsTypesAsync();
+            var types = await _productTypeRepo.ListAllAsync();
             return Ok(types);                    
         }
     }
