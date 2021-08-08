@@ -34,7 +34,7 @@ namespace API.Middleware
                 context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
                 
                 var response = _env.IsDevelopment()
-                        ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message
+                        ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message.ToString()
                         ,ex.StackTrace.ToString())
                         : new ApiException((int)HttpStatusCode.InternalServerError);
                 
