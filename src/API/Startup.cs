@@ -2,18 +2,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
-using Core.Interfaces;
-using Infrastructure.Data.Repositories;
 using API.Helpers;
 using API.Middleware;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using API.Errors;
 using API.Extensions;
+using StackExchange.Redis;
 
 namespace API
 {
@@ -38,6 +32,13 @@ namespace API
 
             services.AddSwaggerDocumentation();
 
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+                var config = ConfigurationOptions
+                    .Parse(_config
+                        .GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(config);
+            });
         
             services.AddCors(options => options.AddPolicy("AllowAll",
                           builder =>                          
