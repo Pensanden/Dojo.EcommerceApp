@@ -1,12 +1,12 @@
-<div class="container">
+<div class="container mt-5">
     <div class="row">
 
 
         <section class="col-3">
-            
+
             <h5 class="text-warning ml-3">Sort</h5>
             <select class="custom-select mb-4" (change)="onSortSelected($event.target.value)">
-                <option *ngFor="let sort of sortOptions" 
+                <option *ngFor="let sort of sortOptions"
 
                     [value]="sort.value">
                     {{sort.name}}
@@ -17,7 +17,7 @@
 
             <h5 class="text-warning ml-3">Brands</h5>
             <ul class="list-group my-3">
-                <li class="list-group-item " 
+                <li class="list-group-item "
                 *ngFor="let brand of brands"
                 [class.active]="brand.id === this.shopParams.brandId"
                 [value]="brand.id"
@@ -26,7 +26,7 @@
                     {{brand.name}}
                 </li>
             </ul>
-           
+
             <h5 class="text-warning ml-3">Types</h5>
             <ul class="list-group my-3">
                 <li class="list-group-item"
@@ -38,17 +38,17 @@
                 </li>
             </ul>
         </section>
-        
+
         <section class="col-9">
             <div class="d-flex justify-content-between align-items-center pb-2">
-             
+
                 <app-paging-header
                     [totalCount]="totalCount"
                     [pageSize]="this.shopParams.pageSize"
                     [pageNumber]="this.shopParams.pageNumber"
                 >
-                </app-paging-header> 
-             
+                </app-paging-header>
+
                 <div class="form-inline mt-2">
                     <input (keyup.enter)="onSearch()" class="form-control mr-2" #search style="width: 300px" placeholder="Search" type="text">
                     <button (click)="onSearch()" class="btn btn-outline-primary my-2">Search</button>
@@ -57,7 +57,7 @@
             </div>
 
 
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">  
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col mb-4" *ngFor="let item of products">
                 <app-product-item [product]="item"></app-product-item>
                 </div>
@@ -65,11 +65,11 @@
               <div class="d-flex justify-content-center" *ngIf="totalCount > 0">
                 <app-pager
                     [pageSize]="this.shopParams.pageSize"
-                    [totalCount]="totalCount" 
+                    [totalCount]="totalCount"
                     (pageChanged)="onPageChanged($event)"
-                ></app-pager>                  
-                
+                ></app-pager>
+
             </div>
         </section>
     </div>
-</div> 
+</div>
