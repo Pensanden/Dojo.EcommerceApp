@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NavigationExtras, Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
+import {catchError, delay} from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 this.toastr.error(error.error.message,error.error.statuscode)
             }
           }
-          
+
           if (error.status === 401) {
             this.toastr.error(error.error.message, error.error.statusCode);
           }
@@ -42,7 +42,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           }
         }
         return throwError(error);
-      }) 
+      })
     );
   }
 

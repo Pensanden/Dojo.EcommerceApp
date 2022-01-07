@@ -12,7 +12,7 @@ import { ShopService } from './shop.service';
 })
 export class ShopComponent implements OnInit {
 
-  @ViewChild('search',{ static: true })  searchTerm!:ElementRef;
+  @ViewChild('search',{ static: false })  searchTerm!:ElementRef;
   products!: any;
   brands!: IBrand[];
   types!: IType[];
@@ -32,7 +32,7 @@ export class ShopComponent implements OnInit {
     this.getBrands();
     this.getTypes();
   }
-  
+
   getProducts()  {
     this,this.shopService.getProducts(this.shopParams)
     .subscribe(
@@ -44,7 +44,7 @@ export class ShopComponent implements OnInit {
       }, error => {
         console.log(error);
       })
-    
+
   }
 
   getBrands() {
@@ -101,4 +101,3 @@ export class ShopComponent implements OnInit {
     this.getProducts();
   }
 }
-  
