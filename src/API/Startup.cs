@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data;
+using API.Extensions;
 using API.Helpers;
 using API.Middleware;
-using API.Extensions;
+using Infrastructure.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
 namespace API
@@ -14,37 +14,33 @@ namespace API
     public class Startup
     {
         private readonly IConfiguration _config;
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration config)
         {
-            _config = configuration;
+            _config = config;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(typeof(MappingProfiles));
-            
-            services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
-            
             services.AddControllers();
-            
-            services.AddApplicationServices();
-
-            services.AddSwaggerDocumentation();
+            services.AddDbContext<StoreContext>(x =>
+                x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
 
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
-                var config = ConfigurationOptions
-                    .Parse(_config
-                        .GetConnectionString("Redis"), true);
-                return ConnectionMultiplexer.Connect(config);
+                var configuration = ConfigurationOptions.Parse(_config.GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(configuration);
             });
-        
-            services.AddCors(options => options.AddPolicy("AllowAll",
-                          builder =>                          
-                              builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
-
-
+            services.AddApplicationServices();
+            services.AddSwaggerDocumentation();
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,20 +48,19 @@ namespace API
         {
             app.UseMiddleware<ExceptionMiddleware>();
 
-            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
+            app.UseSwaggerDocumentation();
+
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
             app.UseStaticFiles();
 
-            app.UseCors("AllowAll");
-            
+            app.UseCors("CorsPolicy");
+
             app.UseAuthorization();
 
-            app.UseSwaggerDocumentation(); 
-            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

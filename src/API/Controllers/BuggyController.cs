@@ -6,42 +6,40 @@ namespace API.Controllers
 {
     public class BuggyController : BaseApiController
     {
-        private StoreContext _ctx;
-        public BuggyController(StoreContext ctx)
+        private readonly StoreContext _context;
+        public BuggyController(StoreContext context)
         {
-            _ctx = ctx;
+            _context = context;
         }
 
-        //this controller is for testing error handeling do not use in production
-        [HttpGet("NotFound")]
+        [HttpGet("notfound")]
         public ActionResult GetNotFoundRequest()
         {
-           var thing =  _ctx.Products.Find(42);
-            if (thing == null)
-            {
-                return NotFound(new ApiResponse(404));
-            }
+            var thing = _context.Products.Find(42);
+
+            if (thing == null) return NotFound(new ApiResponse(404));
+
             return Ok();
         }
 
-        [HttpGet("ServerError")]
+        [HttpGet("servererror")]
         public ActionResult GetServerError()
         {
-            var thing = _ctx.Products.Find(42);
+            var thing = _context.Products.Find(42);
 
             var thingToReturn = thing.ToString();
-            
+
             return Ok();
         }
 
-        [HttpGet("BadRequest")]
+        [HttpGet("badrequest")]
         public ActionResult GetBadRequest()
         {
             return BadRequest(new ApiResponse(400));
         }
-        
-        [HttpGet("Badrequest/{id}")]
-        public ActionResult GetNotFountRequest(int id)
+
+        [HttpGet("badrequest/{id}")]
+        public ActionResult GetNotFoundRequest(int id)
         {
             return Ok();
         }

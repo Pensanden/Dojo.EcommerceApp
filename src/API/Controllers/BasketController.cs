@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,6 @@ namespace API.Controllers
     public class BasketController : BaseApiController
     {
         private readonly IBasketRepository _basketRepository;
-
         public BasketController(IBasketRepository basketRepository)
         {
             _basketRepository = basketRepository;
@@ -26,13 +25,14 @@ namespace API.Controllers
         public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasket basket)
         {
             var updatedBasket = await _basketRepository.UpdateBasketAsync(basket);
-            return Ok();
+
+            return Ok(updatedBasket);
         }
 
-        [HttpDelete] public async Task DeleteBasket(string id)
+        [HttpDelete]
+        public async Task DeleteBasketAsync(string id)
         {
             await _basketRepository.DeleteBasketAsync(id);
         }
-        
     }
 }
