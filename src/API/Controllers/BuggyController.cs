@@ -1,5 +1,6 @@
 using API.Errors;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -20,6 +21,13 @@ namespace API.Controllers
             if (thing == null) return NotFound(new ApiResponse(404));
 
             return Ok();
+        }
+
+        [HttpGet("TestAuth")]
+        [Authorize]
+        public ActionResult<string> GetSecretString()
+        {
+            return "secret stuff";
         }
 
         [HttpGet("servererror")]
