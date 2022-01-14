@@ -102,6 +102,10 @@ namespace API.Controllers
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto req)
     {
+        if (CheckEmailExistsAsync(req.Email).Result.Value)
+        {
+            return BadRequest(new ApiValidationErrorResponse{Errors = new[]{"Email is Duplicated"}});
+        }
         var user = new AppUser
         {
             DisplayName = req.UserName,
